@@ -48,7 +48,7 @@ python run_classifier.py
         --max_m 0.32289308625543495 
         --warmup_proportion 0.2951384375813258 
         --do_train 
-        --do_eval
+        --do_test
 
 ```
 
@@ -68,7 +68,7 @@ python run_classifier.py
         --warmup_proportion 0.2808958299478227 
         --output_dir ^BEST_LABELATTN 
         --do_train
-        --do_eval
+        --do_test
 ```
 
 To train the baseline model:
@@ -82,5 +82,25 @@ python run_classifier.py
         --num_train_epochs 25 
         --doc_max_seq_length 256 
         --do_train 
-        --do_eval
+        --do_test
+```
+
+For the SKML models:
+```
+python run_SKMLearnExps.py 
+        --data processed_data/german/ 
+        --parameter_search
+        --do_train 
+        --load_best_parameters
+        --eval_data test
+```
+
+For the hyperparameter search using Optuna:
+```
+ python hyperparam_search.py 
+         --data_dir processed_data/german/ 
+         --encoder_name_or_path bert-base-multilingual-cased 
+         --encoder_type bert 
+         --model mc2c 
+         --output_dir parameter_search/german/
 ```
