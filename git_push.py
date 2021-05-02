@@ -14,6 +14,6 @@ else:
 cmd = 'git commit -m "{}"'.format(message)
 temp = os.popen(cmd).read()
 print(temp)
-cmd = 'git push origin master'
+cmd = 'git push origin main'
 temp = os.popen(cmd).read()
 print(temp)
