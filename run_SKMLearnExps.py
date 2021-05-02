@@ -36,10 +36,6 @@ from skmultilearn.dataset import load_dataset
 
 
 class ClassificationPipeline():
-    """
-    A pipeline which
-    """
-
     def __init__(self, args):
         self.args = args
         self.mlb = self.load(os.path.join(args.data_dir, 'mlb_0_False.p'))
@@ -382,10 +378,6 @@ class ClassificationPipeline():
         self.eval_on_all(testing=True if self.args.eval_data=='test' else False)
 
     def eval_on_all(self, testing=False):
-        # hierarchical_evaluator = HierarchicalEvaluator(test=testing)
-        # hier_eval_results = hierarchical_evaluator.do_hierarchical_eval()
-        # print("\n\n***** Hierarchical eval results on ALL labels : ***** ")
-        # print(hier_eval_results)
 
         def load_gold_data():
             path2gold = os.path.join(self.args.data_dir,
@@ -433,120 +425,7 @@ class ClassificationPipeline():
         if self.args.do_train:
             self.run_classification()
 
-    # def run_classification(self):
-    #     # self.process_data()
-    #     # self.write_file(os.path.join(self.args.output_dir, 'dataset_stats.txt'), self.print_stats())
-    #     svm_params = {"C": self.args.C, "class_weight": self.args.class_weight, "kernel": self.args.kernel}
-    #     if self.args.grid_search:
-    #         classifiers = {
-    #             "BinaryRelevance": MyBinaryRelevance,
-    #             "ClassifierChain": MyClassifierChain,
-    #             "LabelPowerset": LabelPowerset}
-    #     else:
-    #         classifiers = {
-    #             "BinaryRelevance": MyBinaryRelevance(classifier=SVC(**svm_params),
-    #                                                  require_dense=[False, True]),
-    #             "ClassifierChain": MyClassifierChain(classifier=SVC(**svm_params),
-    #                                                  require_dense=[False, True]),
-    #             "LabelPowerset": LabelPowerset(classifier=SVC(**svm_params),
-    #                                            require_dense=[False, True]),
-    #             "RakelD": MyRakelD(base_classifier=SVC(**svm_params),
-    #                                base_classifier_require_dense=[True, True],
-    #                                labelset_size=3),
-    #             "RakelO": MyRakelO(base_classifier=SVC(**svm_params),
-    #                                base_classifier_require_dense=[True, True],
-    #                                labelset_size=3,
-    #                                model_count=2 * self.y_train.shape[1])}
-    #
-    #     for clf_name, clf in classifiers.items():
-    #         start_time = None
-    #         self.args.output_dir = os.path.join(self.args.output_dir, '_'.join([clf_name,
-    #                                                                             self.args.base_classifier,
-    #                                                                             str(self.args.C),
-    #                                                                             str(self.args.class_weight),
-    #                                                                             str(self.args.kernel),
-    #                                                                             ])) if not self.args.grid_search \
-    #             else os.path.join(self.args.output_dir, '_'.join([clf_name, 'grid_search']))
-    #         print("****************************************************************************")
-    #         print("*****                     {} + {} model                *****".format(clf_name,
-    #                                                                                     self.args.base_classifier))
-    #         print("****************************************************************************")
-    #
-    #         if not os.path.exists(os.path.join(self.args.output_dir, 'model.p')):
-    #             start_time = time.time()
-    #             now = datetime.now()
-    #             print("Start time: ", now.strftime("%d.%m.%y %H:%M"))
-    #             if self.args.grid_search:
-    #                 print("Running grid search..........")
-    #                 parameters = {
-    #                     'classifier': [SVC()],
-    #                     'classifier__C': uniform(loc=0, scale=1000),
-    #                     'classifier__kernel': ['linear', 'poly', 'rbf', 'sigmoid'],
-    #                     'classifier__degree': [0, 1, 2, 3, 4, 5, 6],
-    #                     'classifier__gamma': [2 ** i for i in range(-5, 16)],
-    #                     'classifier__shrinking': [True, False],
-    #                     'classifier__class_weight': ['balanced', None],
-    #                 }
-    #
-    #                 clf = RandomizedSearchCV(clf(), parameters, scoring='f1_micro')
-    #                 search = clf.fit(self.X_train, self.y_train)
-    #                 best_param_dict = search.best_params_
-    #                 out_str = '\n'.join([str(k) + ': ' + str(v) for k, v in best_param_dict.items()])
-    #                 out_str += '\nBest F1-Micro:' + str(search.best_score_)
-    #                 self.write_file(os.path.join(self.args.output_dir, 'best_params.txt'), out_str)
-    #                 print(out_str)
-    #                 self.save(best_param_dict, os.path.join(self.args.output_dir, 'best_args.p'))
-    #                 self.args.output_dir = '/'.join(self.args.output_dir.split('/')[:-1])
-    #                 continue
-    #             else:
-    #                 print("Running training..........")
-    #                 clf.fit(self.X_train, self.y_train)
-    #                 self.save(clf, os.path.join(self.args.output_dir, 'model.p'))
-    #                 print("Trained {} model saved!".format(clf_name))
-    #                 print("End time: ", now.strftime("%d.%m.%y %H:%M"))
-    #                 end_time = time.time()
-    #         else:
-    #             clf = self.load(os.path.join(self.args.output_dir, 'model.p'))
-    #         print("Running eval..........")
-    #         y_preds = clf.predict(self.X_dev) if self.args.eval_data == 'dev' else clf.predict(self.X_test)
-    #         y_true = self.y_dev if self.args.eval_data == 'dev' else self.y_test
-    #
-    #         with open(os.path.join(self.args.output_dir, "preds_development.tsv"), "w") as wf:
-    #             wf.write("file\tcode\n")
-    #             data = self.dev if self.args.eval_data == 'dev' else self.test
-    #             ids = [d[0] for d in data]
-    #             preds = [self.mlb.classes_[y_preds.toarray().astype(int)[i][:]].tolist() for i in
-    #                      range(y_preds.shape[0])]
-    #             id2preds = {val: preds[i] for i, val in enumerate(ids)}
-    #             preds = [id2preds[val] if val in id2preds else [] for i, val in enumerate(ids)]
-    #             for idx, doc_id in enumerate(ids):
-    #                 for p in preds[idx]:
-    #                     if p != 'None':
-    #                         line = str(doc_id) + "\t" + p + "\n"
-    #                         wf.write(line)
-    #
-    #         n_labels = np.sum(y_preds, axis=1)
-    #         avg_pred_n_labels = np.mean(n_labels)
-    #         avg_true_n_labels = np.mean(np.sum(y_true, axis=1))
-    #         total_uniq = len(np.nonzero(np.sum(y_preds, axis=0))[0])
-    #
-    #         out_str = "\n************ {} + {} Performance ************".format(clf_name, self.args.base_classifier)
-    #         if start_time:
-    #             out_str += "\nTraining Runtime: {}".format(self.timer(start_time, end_time))
-    #         out_str += "\nF1: {}".format(metrics.f1_score(y_true, y_preds, average='micro'))
-    #         out_str += "\nP: {}".format(metrics.precision_score(y_true, y_preds, average='micro'))
-    #         out_str += "\nR: {}".format(metrics.recall_score(y_true, y_preds, average='micro'))
-    #         hierarchical_evaluator = HierarchicalEvaluator(self.args)
-    #         out_str += "\n--- Hierarchical Metrics ---\n"
-    #         out_str += hierarchical_evaluator.do_hierarchical_eval()
-    #         out_str += "\n--- Additional Info ---"
-    #         out_str += "\nAverage #labels/doc preds: " + str(avg_pred_n_labels)
-    #         out_str += "\nAverage #labels/doc true: " + str(avg_true_n_labels)
-    #         out_str += "\nTotal unique labels predicted: " + str(total_uniq)
-    #         self.write_file(os.path.join(self.args.output_dir, 'eval_results.txt'), out_str)
-    #         print(out_str)
-    #         self.args.output_dir = '/'.join(self.args.output_dir.split('/')[:-1])
-
+    
 
 def main():
     parser = argparse.ArgumentParser()
