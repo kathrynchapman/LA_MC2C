@@ -65,8 +65,7 @@ python run_classifier.py
         --learning_rate 3.708441754237857e-05 
         --weight_decay 2.4197691267693067 
         --adam_epsilon 0.0001255758423684405 
-        --warmup_proportion 0.2808958299478227 
-        --output_dir ^BEST_LABELATTN 
+        --warmup_proportion 0.2808958299478227  
         --do_train
         --do_test
 ```
