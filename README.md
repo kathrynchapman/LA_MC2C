@@ -21,6 +21,11 @@ make
 cd ../../
 ```
 
+Step 4: Create a virtual environment from the .yml file. IMPORTANT: The transformer library must be ~2.4.1
+```
+conda env create --file ICDEnv.yml
+```
+
 To train the MC2C model:
 ```
 python run_classifier.py 
